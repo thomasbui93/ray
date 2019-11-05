@@ -2,11 +2,23 @@
 
 require 'exceptions/api/entity_not_found'
 require 'exceptions/api/operation_failed'
+require 'exceptions/api/invalid_data'
 
 class Vault::VaultService
   def initialize
     @account_service = Owner::AccountService.new
     @application_service = System::ApplicationService.new
+  end
+
+  def fetch(account_id, application_id)
+    account = @account_service.minimum(account_id)
+    application = @application_service.minimum(application_id)
+    Vault::Value.where(
+      account: account,
+      application: application
+    ).limit(40)
+  rescue ActiveRecord::RecordNotFound => _e
+    raise RayExceptions::EntityNotFound
   end
 
   def create(parameters = {})
@@ -20,8 +32,8 @@ class Vault::VaultService
     end
     value.save!
     value
-  rescue ActiveRecord::RecordNotFound => _e
-    raise RayExceptions::EntityNotFound
+  rescue ActiveRecord::RecordInvalid => e
+    raise RayExceptions::InvalidData, e.message
   rescue StandardError => _e
     raise RayExceptions::OperationFailed, 'create'
   end
@@ -33,6 +45,8 @@ class Vault::VaultService
     value
   rescue ActiveRecord::RecordNotFound => _e
     raise RayExceptions::EntityNotFound
+  rescue ActiveRecord::RecordInvalid => e
+    raise RayExceptions::InvalidData, e.message
   rescue StandardError => _e
     raise RayExceptions::OperationFailed, 'update'
   end

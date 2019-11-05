@@ -7,7 +7,8 @@ class Api::VaultValueController < ApplicationController
   end
 
   def index
-    render json: [], status: :ok
+    items = @vault_service.fetch(params[:account_id], params[:application_id])
+    render json: { items: items }, status: :ok
   end
 
   def destroy
@@ -21,14 +22,10 @@ class Api::VaultValueController < ApplicationController
   def create
     value = @vault_service.create params
     render json: { 'value': value }, status: :ok
-  rescue StandardError => e
-    render json: { 'error': e.message }, status: :error
   end
 
   def update
     value = @vault_service.update params[:id], params
     render json: { 'value': value }, status: :ok
-  rescue StandardError => e
-    render json: { 'error': e.message }, status: :error
   end
 end
