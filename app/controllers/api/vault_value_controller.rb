@@ -2,6 +2,9 @@
 
 # api/vault_value controller
 class Api::VaultValueController < ApplicationController
+  #allow_parameters :index, :anything
+  #allow_parameters :show, :anything
+
   def initialize
     @vault_service = Vault::VaultService.new
   end
@@ -16,7 +19,8 @@ class Api::VaultValueController < ApplicationController
   end
 
   def show
-    @vault_service.get(params[:id])
+    value = @vault_service.get(params[:id])
+    render json: { value: value}, status: :ok
   end
 
   def create

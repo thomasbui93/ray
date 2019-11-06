@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'exceptions/api/base'
+require 'guard/parameters'
 
 class ApplicationController < ActionController::Base
+  include RayGuard::Parameters
+
   rescue_from StandardError, with: :render_standard_error
   rescue_from RayExceptions::BaseApiException, with: :render_error_response
 
@@ -10,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   def render_standard_error(error)
     Rails.logger.debug error.message
+    Rails.logger.debug error.backtrace
     render json: { error: 'Internal Error.' }, status: :error
   end
 
