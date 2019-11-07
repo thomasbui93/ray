@@ -6,7 +6,6 @@ module RayGuard
     end
 
     module ClassMethods
-      
       def self.extended(base)
         base.class_eval do
           class_attribute :allowed_parameters
@@ -20,7 +19,7 @@ module RayGuard
   
     private
     def check_parameters
-      Rails.logger.info "Check parameters #{params[:account].}: #{allowed_parameters}"
+      Rails.logger.info "Check parameters #{params[:account]}: #{allowed_parameters}"
     end
   end
 end
