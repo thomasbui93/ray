@@ -8,3 +8,6 @@ Style/Documentation:
 
 Metrics/MethodLength:
   Max: 25
+
+Metrics/AbcSize:
+  Max: 25
