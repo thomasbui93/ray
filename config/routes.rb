@@ -3,7 +3,12 @@ Rails.application.routes.draw do
   namespace :api do
     resources :account do
       resources :application do
-        resources :vault_value
+        resources :vault_value do
+          member do
+            get 'parent'
+            get 'children'
+          end
+        end
       end
     end
   end

@@ -24,13 +24,14 @@ module RayGuard
     private
 
     def check_parameters
-      whitelist_parameters = allowed_parameters[params[:action].to_sym]
+      whitelist_parameters = allowed_parameters[params[:action].to_sym] +
+                             allowed_parameters[:*]
       return true if whitelist_parameters == :anything
 
       params.each do |key, _value|
         next if ACTION_PARAMS.include? key
 
-        params.delete(key) unless whitelist_parameters.include? key
+        params.delete(key) unless whitelist_parameters.include? key.to_sym
       end
     end
   end
