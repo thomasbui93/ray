@@ -10,7 +10,10 @@ class Vault::Value < ApplicationRecord
     scope: %i[account_id application_id parent_id],
     message: 'Configuration is existed'
   }
-  attr_readonly :account_id
+  validates :account_id, presence: true
+  validates :application_id, presence: true
+
+  attr_readonly :account
 
   belongs_to :parent,
              class_name: 'Vault::Value',

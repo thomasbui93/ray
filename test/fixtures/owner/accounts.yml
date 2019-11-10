@@ -1,0 +1,9 @@
+minimum_account:
+  id: 1
+  name: minimum account
+  universal_key: universal key account
+
+minimum_account_another:
+  id: 2
+  name: minimum account another
+  universal_key: universal key account another

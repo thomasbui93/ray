@@ -19,4 +19,5 @@ jobs:
         gem install bundler
         gem install rubocop
         bundle install --jobs 4 --retry 3
-        bundle exec rubocop app lib -a
+        bundle exec rubocop app lib test -a
+        bundle exec rails test
