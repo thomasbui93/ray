@@ -40,12 +40,12 @@ class Api::VaultValueController < ApplicationController
   allow_parameters :parent, %i[id]
   def parent
     parent = @vault_service.get_parent params[:id]
-    render json: { 'value': parent }, status: :ok
+    render json: { 'parent': parent }, status: :ok
   end
 
   allow_parameters :children, %i[id]
   def children
     children = @vault_service.get_children params[:id]
-    render json: { 'value': children }, status: :ok
+    render json: { 'children': children }, status: :ok
   end
 end
