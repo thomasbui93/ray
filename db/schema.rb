@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_02_115053) do
+ActiveRecord::Schema.define(version: 2019_11_09_234446) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 2019_11_02_115053) do
     t.integer "account_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "parent_id"
     t.index "\"application\", \"account\"", name: "index_configuration_values_on_application_and_account"
     t.index ["account_id"], name: "index_configuration_values_on_account_id"
     t.index ["application_id"], name: "index_configuration_values_on_application_id"
@@ -42,4 +43,5 @@ ActiveRecord::Schema.define(version: 2019_11_02_115053) do
 
   add_foreign_key "configuration_values", "accounts"
   add_foreign_key "configuration_values", "applications"
+  add_foreign_key "configuration_values", "configuration_values", column: "parent_id", on_update: :cascade, on_delete: :cascade
 end

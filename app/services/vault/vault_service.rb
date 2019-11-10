@@ -15,7 +15,8 @@ class Vault::VaultService
     application = @application_service.minimum(application_id)
     Vault::Value.where(
       account: account,
-      application: application
+      application: application,
+      parent_id: nil
     ).limit(40)
   rescue ActiveRecord::RecordNotFound => _e
     raise RayExceptions::EntityNotFound
@@ -29,6 +30,7 @@ class Vault::VaultService
       v.application = application
       v.value = parameters[:value]
       v.path = parameters[:path]
+      v.parent_id = parameters[:parent_id]
     end
     value.save!
     value
@@ -51,18 +53,6 @@ class Vault::VaultService
     raise RayExceptions::OperationFailed, 'update'
   end
 
-  def get_by_path(path, account_id, application_id)
-    account = @account_service.minimum(account_id)
-    application = @application_service.minimum(application_id)
-    Vault::Value.find_by!(
-      path: path,
-      account: account,
-      application: application
-    )
-  rescue ActiveRecord::RecordNotFound => _e
-    raise RayExceptions::EntityNotFound
-  end
-
   def delete(id)
     effected = Vault::Value.delete(id)
     raise RayExceptions::OperationFailed, 'deletion' unless effected != 1
@@ -70,6 +60,19 @@ class Vault::VaultService
 
   def get(id)
     Vault::Value.find(id)
+  rescue ActiveRecord::RecordNotFound => _e
+    raise RayExceptions::EntityNotFound
+  end
+
+  def get_parent(id)
+    value = Vault::Value.find(id)
+    value.parent_id ? Vault::Value.find(value.parent_id) : nil
+  rescue ActiveRecord::RecordNotFound => _e
+    raise RayExceptions::EntityNotFound
+  end
+
+  def get_children(id)
+    Vault::Value.children(id)
   rescue ActiveRecord::RecordNotFound => _e
     raise RayExceptions::EntityNotFound
   end
