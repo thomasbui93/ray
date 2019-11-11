@@ -55,7 +55,7 @@ class Vault::VaultService
 
   def delete(id)
     effected = Vault::Value.delete(id)
-    raise RayExceptions::OperationFailed, 'deletion' unless effected != 1
+    raise RayExceptions::OperationFailed, 'deletion' unless effected == 1
   end
 
   def get(id)
@@ -75,15 +75,5 @@ class Vault::VaultService
     Vault::Value.children(id)
   rescue ActiveRecord::RecordNotFound => _e
     raise RayExceptions::EntityNotFound
-  end
-
-  def delete_by(path, account_id, application_id)
-    account = @account_service.minimum(account_id)
-    application = @application_service.minimum(application_id)
-    Vault::Value.delete_by!(
-      path: path,
-      account: account,
-      application: application
-    )
   end
 end
