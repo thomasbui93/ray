@@ -1,0 +1,20 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+vault_created_audit:
+  entity_type: vault_value
+  entity_id: 1
+  payload: "{ value: 'test_value', path: 'test_path', account_id: 1, application_id: 1}"
+
+vault_created_audit_1:
+  entity_type: vault_value
+  entity_id: 1
+  payload: "{ value: 'test_value_1', path: 'test_path_1', account_id: 1, application_id: 1}"
+
+vault_created_audit_1:
+  entity_type: vault_value
+  entity_id: 1
+  payload: "{ value: 'test_value_1', path: 'test_path_1', account_id: 1, application_id: 1}"
