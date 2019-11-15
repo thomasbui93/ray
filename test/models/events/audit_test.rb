@@ -14,15 +14,15 @@ class Events::AuditTest < ActiveSupport::TestCase
       application_id: 1,
       account_id: 1
     }
+    audit.audit_type = 'create'
     assert audit.save!
     assert audit.entity_type, 'vault_value'
     assert audit.entity_id, 1
-    assert audit.payload, {
-      path: 'test_path',
-      value: 'test_value',
-      application_id: 1,
-      account_id: 1
-    }
+    assert audit.payload,
+           path: 'test_path',
+           value: 'test_value',
+           application_id: 1,
+           account_id: 1
   end
 
   test 'vault payload invalid' do
@@ -37,13 +37,13 @@ class Events::AuditTest < ActiveSupport::TestCase
       test1: 1,
       test2: 2
     }
+    audit.audit_type = 'create'
     assert audit.save!
-    assert audit.payload, {
-      path: 'test_path',
-      value: 'test_value',
-      application_id: 1,
-      account_id: 1
-    }
+    assert audit.payload,
+           path: 'test_path',
+           value: 'test_value',
+           application_id: 1,
+           account_id: 1
   end
 
   test 'vault entity_type invalid' do
@@ -58,6 +58,7 @@ class Events::AuditTest < ActiveSupport::TestCase
       test1: 1,
       test2: 2
     }
+    audit.audit_type = 'create'
     assert_raises(ActiveRecord::RecordInvalid) do
       audit.save!
     end
@@ -67,14 +68,14 @@ class Events::AuditTest < ActiveSupport::TestCase
     audit = events_audits(:vault_created_audit)
     audit.entity_type = 'owner_account'
     assert_raises(ActiveRecord::ReadOnlyRecord) do
-      refute audit.save!
+      assert_not audit.save!
     end
   end
 
   test 'not allow remove' do
     audit = events_audits(:vault_created_audit)
     assert_raises(ActiveRecord::ReadOnlyRecord) do
-      refute audit.destroy!
+      assert_not audit.destroy!
     end
   end
 

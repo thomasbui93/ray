@@ -7,14 +7,17 @@
 vault_created_audit:
   entity_type: vault_value
   entity_id: 1
+  audit_type: create
   payload: "{ value: 'test_value', path: 'test_path', account_id: 1, application_id: 1}"
 
 vault_created_audit_1:
   entity_type: vault_value
   entity_id: 1
+  audit_type: create
   payload: "{ value: 'test_value_1', path: 'test_path_1', account_id: 1, application_id: 1}"
 
 vault_created_audit_1:
   entity_type: vault_value
   entity_id: 1
+  audit_type: create
   payload: "{ value: 'test_value_1', path: 'test_path_1', account_id: 1, application_id: 1}"

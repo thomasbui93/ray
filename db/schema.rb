@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 2019_11_13_221420) do
 
   create_table "events_audits", force: :cascade do |t|
     t.string "entity_type", null: false
+    t.string "audit_type", null: false
     t.json "payload", null: false
     t.datetime "created_at", null: false
     t.integer "entity_id", null: false

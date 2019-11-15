@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Events::Audit < ApplicationRecord
-  ALLOWED_TYPES = %w[vault_value owner_account system_application].freeze
+  ALLOWED_ENTITY_TYPES = %w[vault_value owner_account system_application].freeze
+  ALLOWED_TYPES = %w[create update delete].freeze
   before_save :trim_payload
   validate :validate_entity_type
 
@@ -19,7 +20,7 @@ class Events::Audit < ApplicationRecord
   end
 
   def trim_payload_vault
-    payload = {
+    self.payload = {
       account_id: payload.try(:account_id),
       application_id: payload.try(:application_id),
       value: payload.try(:value),
@@ -28,18 +29,22 @@ class Events::Audit < ApplicationRecord
   end
 
   def trim_payload_account
-    payload = {
+    self.payload = {
       universal_key: payload.universal_key
     }
   end
 
   def trim_payload_application
-    payload = {
+    self.payload = {
       universal_key: payload.universal_key
     }
   end
 
   def validate_entity_type
-    errors.add :entity_type, 'Invalid entity_type' unless entity_type.in? ALLOWED_TYPES
+    errors.add :entity_type, 'Invalid entity_type' unless entity_type.in? ALLOWED_ENTITY_TYPES
+  end
+
+  def validate_type
+    errors.add :audit_type, 'Invalid type' unless audit_type.in? ALLOWED_TYPES
   end
 end

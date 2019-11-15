@@ -34,14 +34,6 @@ class Vault::VaultService
       v.parent_id = parameters[:parent_id]
     end
     value.save!
-    @audit_service.create_audit(
-      value.id,
-      payload: {
-        account_id: value.account_id,
-        application_id: value.application_id,
-        value: value.value
-      }
-    )
     value
   rescue ActiveRecord::RecordInvalid => e
     raise RayExceptions::InvalidData, e.message
