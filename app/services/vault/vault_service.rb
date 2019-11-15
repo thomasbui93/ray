@@ -4,11 +4,14 @@ require 'exceptions/api/entity_not_found'
 require 'exceptions/api/operation_failed'
 require 'exceptions/api/invalid_data'
 
-class Vault::VaultService
+class Vault::VaultService < Event::Audit
+  extend Forwardable
+  def_delegator :@audit_service, :get_events, :get_audits
+
   def initialize
+    super 'vault_value'
     @account_service = Owner::AccountService.new
     @application_service = System::ApplicationService.new
-    @audit_service = Event::AuditService.new('vault_value')
   end
 
   def fetch(account_id, application_id)
@@ -34,6 +37,7 @@ class Vault::VaultService
       v.parent_id = parameters[:parent_id]
     end
     value.save!
+    audit_create_event(value)
     value
   rescue ActiveRecord::RecordInvalid => e
     raise RayExceptions::InvalidData, e.message
@@ -43,7 +47,10 @@ class Vault::VaultService
 
   def update(id, parameters = {})
     value = Vault::Value.find(id)
-    value.value = parameters[:value]
+    value.value = parameters[:value] if parameters[:value].present?
+    value.path = parameters[:path] if parameters[:path].present?
+    value.parent_id = parameters[:parent_id] if parameters[:parent_id].present?
+    audit_update_event(id, value.changes)
     value.save!
     value
   rescue ActiveRecord::RecordNotFound => _e
@@ -57,6 +64,8 @@ class Vault::VaultService
   def delete(id)
     effected = Vault::Value.delete(id)
     raise RayExceptions::OperationFailed, 'deletion' unless effected == 1
+
+    audit_remove_event(id)
   end
 
   def get(id)

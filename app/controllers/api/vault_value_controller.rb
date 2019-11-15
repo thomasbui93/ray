@@ -31,7 +31,7 @@ class Api::VaultValueController < ApplicationController
     render json: { 'value': value }, status: :ok
   end
 
-  allow_parameters :update, %i[value path parent_id]
+  allow_parameters :update, %i[value path parent_id id]
   def update
     value = @vault_service.update params[:id], params
     render json: { 'value': value }, status: :ok
@@ -47,5 +47,11 @@ class Api::VaultValueController < ApplicationController
   def children
     children = @vault_service.get_children params[:id]
     render json: { 'children': children }, status: :ok
+  end
+
+  allow_parameters :audits, %i[id]
+  def audits
+    audits = @vault_service.get_audits params[:id]
+    render json: { 'audits': audits }, status: :ok
   end
 end

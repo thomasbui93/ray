@@ -11,7 +11,7 @@ class Events::Audit < ApplicationRecord
   end
 
   scope :for_entity, lambda { |type|
-    where('entity_type', type) if type.present?
+    where(entity_type: type) if type.present?
   }
 
   def trim_payload
@@ -19,24 +19,25 @@ class Events::Audit < ApplicationRecord
     send(trim_method) if respond_to? trim_method
   end
 
-  def trim_payload_vault
+  def trim_payload_vault_value
     self.payload = {
-      account_id: payload.try(:account_id),
-      application_id: payload.try(:application_id),
-      value: payload.try(:value),
-      path: payload.try(:path)
+      account_id: payload['account_id'],
+      application_id: payload['application_id'],
+      value: payload['value'],
+      path: payload['path'],
+      parent_id: payload['parent_id']
+    }.compact
+  end
+
+  def trim_payload_owner_account
+    self.payload = {
+      universal_key: payload['universal_key']
     }
   end
 
-  def trim_payload_account
+  def trim_payload_system_application
     self.payload = {
-      universal_key: payload.universal_key
-    }
-  end
-
-  def trim_payload_application
-    self.payload = {
-      universal_key: payload.universal_key
+      universal_key: payload['universal_key']
     }
   end
 

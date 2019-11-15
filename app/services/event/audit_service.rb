@@ -20,6 +20,6 @@ class Event::AuditService
   def get_events(entity_id)
     raise ArgumentError, 'Invalid event entity_id: nil' if entity_id.blank?
 
-    Events::Audit.for_enity(@entity_type).where('entity_id', entity_id) if entity_id.present?
+    Events::Audit.for_entity(@entity_type).where(entity_id: entity_id) if entity_id.present?
   end
 end
