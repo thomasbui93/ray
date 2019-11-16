@@ -7,6 +7,7 @@ Rails.application.routes.draw do
           member do
             get 'parent'
             get 'children'
+            get 'audits'
           end
         end
       end

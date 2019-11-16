@@ -2,6 +2,9 @@
 
 # api/application controller
 class Api::ApplicationController < ApplicationController
+  allow_parameters :*, :anything
+
+  allow_parameters :create, :anything
   def create
     application = System::Application.new do |app|
       app.name = params[:name]
