@@ -4,19 +4,17 @@ require 'exceptions/api/entity_not_found'
 require 'exceptions/api/operation_failed'
 require 'exceptions/api/invalid_data'
 
-class Vault::VaultService < Event::Audit
-  extend Forwardable
-  def_delegator :@audit_service, :get_events, :get_audits
+class Vault::VaultService
+  class_attribute :audit_service, default: Event::AuditService.new('vault_value')
+  class_attribute :account_service, default: Owner::AccountService.new
+  class_attribute :application_service, default: System::ApplicationService.new
 
-  def initialize
-    super 'vault_value'
-    @account_service = Owner::AccountService.new
-    @application_service = System::ApplicationService.new
-  end
+  extend Forwardable
+  def_delegator :audit_service, :get_events, :get_audits
 
   def fetch(account_id, application_id)
-    account = @account_service.minimum(account_id)
-    application = @application_service.minimum(application_id)
+    account = account_service.minimum(account_id)
+    application = application_service.minimum(application_id)
     Vault::Value.where(
       account: account,
       application: application,
@@ -27,8 +25,8 @@ class Vault::VaultService < Event::Audit
   end
 
   def create(parameters = {})
-    account = @account_service.minimum(parameters[:account_id])
-    application = @application_service.minimum(parameters[:application_id])
+    account = account_service.minimum(parameters[:account_id])
+    application = application_service.minimum(parameters[:application_id])
     value = Vault::Value.new do |v|
       v.account = account
       v.application = application
@@ -36,8 +34,10 @@ class Vault::VaultService < Event::Audit
       v.path = parameters[:path]
       v.parent_id = parameters[:parent_id]
     end
-    value.save!
-    audit_create_event(value)
+    ActiveRecord::Base.transaction do
+      value.save!
+      audit_service.audit_create_event(value)
+    end
     value
   rescue ActiveRecord::RecordInvalid => e
     raise RayExceptions::InvalidData, e.message
@@ -50,8 +50,10 @@ class Vault::VaultService < Event::Audit
     value.value = parameters[:value] if parameters[:value].present?
     value.path = parameters[:path] if parameters[:path].present?
     value.parent_id = parameters[:parent_id] if parameters[:parent_id].present?
-    audit_update_event(id, value.changes)
-    value.save!
+    ActiveRecord::Base.transaction do
+      audit_service.audit_update_event(id, value.changes)
+      value.save!
+    end
     value
   rescue ActiveRecord::RecordNotFound => _e
     raise RayExceptions::EntityNotFound
@@ -62,10 +64,12 @@ class Vault::VaultService < Event::Audit
   end
 
   def delete(id)
-    effected = Vault::Value.delete(id)
+    effected = 0
+    ActiveRecord::Base.transaction do
+      effected = Vault::Value.delete(id)
+      audit_service.audit_remove_event(id)
+    end
     raise RayExceptions::OperationFailed, 'deletion' unless effected == 1
-
-    audit_remove_event(id)
   end
 
   def get(id)

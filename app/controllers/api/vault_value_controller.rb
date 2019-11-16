@@ -17,6 +17,7 @@ class Api::VaultValueController < ApplicationController
   allow_parameters :destroy, %i[id]
   def destroy
     @vault_service.delete(params[:id])
+    render json: { done: true }, status: ok
   end
 
   allow_parameters :show, %i[id]
