@@ -17,3 +17,6 @@ Metrics/ClassLength:
 
 Metrics/AbcSize:
   Max: 25
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false

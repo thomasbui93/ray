@@ -1,0 +1,12 @@
+detectors:
+  IrresponsibleModule:
+    enabled: false
+  TooManyStatements:
+    max_statements: 10
+  ManualDispatch:
+    enabled: false
+  FeatureEnvy:
+    exclude:
+      - "ApplicationController#render_error_response"
+      - "ApplicationController#render_standard_error"
+    

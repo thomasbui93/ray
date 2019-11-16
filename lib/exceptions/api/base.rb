@@ -13,6 +13,7 @@ module RayExceptions
       @code = code
       @status = status
     end
+
     def to_json(*_args)
       JSON.generate(
         code: @code,

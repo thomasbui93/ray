@@ -3,8 +3,8 @@
 # api/account controller
 class Api::AccountController < ApplicationController
   allow_parameters :*, :anything
-
   allow_parameters :create, :anything
+
   def create
     account = Owner::Account.new do |acc|
       acc.id = params[:account_id]

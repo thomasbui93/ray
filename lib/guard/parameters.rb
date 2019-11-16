@@ -25,9 +25,10 @@ module RayGuard
 
     def check_parameters
       whitelisted = allowed_parameters[params[:action].to_sym]
-      return true if whitelisted == :anything || allowed_parameters[:*] == :anything
+      base_parameters = allowed_parameters[:*]
+      return true if whitelisted == :anything || base_parameters == :anything
 
-      whitelist_parameters = whitelisted + allowed_parameters[:*]
+      whitelist_parameters = whitelisted + base_parameters
       return true if whitelist_parameters == :anything
 
       params.each do |key, _value|
