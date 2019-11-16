@@ -4,23 +4,21 @@ require 'json'
 
 module RayExceptions
   class BaseApiException < StandardError
+    def initialize(
+      message = 'An error has occurred.',
+      code = 'ERROR-UNKNOWN',
+      status = 500
+    )
+      @message = message
+      @code = code
+      @status = status
+    end
+
     def to_json(*_args)
       JSON.generate(
         code: @code,
         message: @message
       )
-    end
-
-    def status
-      @status || 500
-    end
-
-    def code
-      @code || 'ERROR-UNKNOWN'
-    end
-
-    def message
-      @message || 'An error has occurred.'
     end
   end
 end

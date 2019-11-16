@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require 'attributes/change_set'
+
 class Event::AuditService
-  attr_accessor :entity_type
+  attr_reader :entity_type
 
   def initialize(entity_type)
     @entity_type = entity_type
@@ -12,24 +14,20 @@ class Event::AuditService
   end
 
   def audit_update_event(id, payload)
-    create_audit(id, 'update', get_change_set(payload))
+    create_audit(id, 'update', Attributes::ChangeSet.get_change_set(payload))
   end
 
   def audit_remove_event(id)
     create_audit(id, 'remove', {})
   end
 
-  def get_change_set(changes)
-    changes.map { |k, v| [k, v[1]] }.to_h
-  end
-
   def create_audit(id, type, payload)
-    audit = Events::Audit.new do |aud|
-      aud.payload = payload
-      aud.entity_type = @entity_type
-      aud.entity_id = id
-      aud.audit_type = type
-    end
+    audit = Events::Audit.new(
+      payload: payload,
+      entity_type: @entity_type,
+      entity_id: id,
+      audit_type: type
+    )
     audit.save!
     audit
   end

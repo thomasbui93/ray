@@ -12,42 +12,42 @@ class Vault::VaultServiceTest < ActiveSupport::TestCase
   test 'create method: sufficent data' do
     account = owner_accounts(:minimum_account)
     application = system_applications(:minimum_app)
-    assert @subject.create(
-      account_id: account.id,
-      application_id: application.id,
-      value: 'value',
-      path: 'path'
-    )
+    assert @subject.create(ActionController::Parameters.new(
+                             account_id: account.id,
+                             application_id: application.id,
+                             value: 'value',
+                             path: 'path'
+                           ))
   end
 
   test 'create method: insufficent data' do
     account = owner_accounts(:minimum_account)
     application = system_applications(:minimum_app)
     assert_raises(RayExceptions::InvalidData) do
-      @subject.create(
-        account_id: account.id,
-        value: 'value',
-        path: 'path'
-      )
+      @subject.create(ActionController::Parameters.new(
+                        account_id: account.id,
+                        value: 'value',
+                        path: 'path'
+                      ))
     end
 
     assert_raises(RayExceptions::InvalidData) do
-      @subject.create(
-        application_id: application.id,
-        value: 'value',
-        path: 'path'
-      )
+      @subject.create(ActionController::Parameters.new(
+                        application_id: application.id,
+                        value: 'value',
+                        path: 'path'
+                      ))
     end
   end
 
   test 'create method: invalid relational data' do
-    assert_raises(RayExceptions::OperationFailed) do
-      @subject.create(
-        account_id: -1,
-        application_id: -2,
-        value: 'value',
-        path: 'path'
-      )
+    assert_raises(RayExceptions::InvalidData) do
+      @subject.create(ActionController::Parameters.new(
+                        account_id: -1,
+                        application_id: -2,
+                        value: 'value',
+                        path: 'path'
+                      ))
     end
   end
 
@@ -55,7 +55,7 @@ class Vault::VaultServiceTest < ActiveSupport::TestCase
     assert_raises(RayExceptions::EntityNotFound) do
       @subject.update(
         -1,
-        value: 'xyz'
+        ActionController::Parameters.new(value: 'xyz')
       )
     end
   end
@@ -65,7 +65,7 @@ class Vault::VaultServiceTest < ActiveSupport::TestCase
     assert_raises(RayExceptions::InvalidData) do
       @subject.update(
         value.id,
-        value: nil
+        ActionController::Parameters.new(value: nil)
       )
     end
   end
@@ -76,7 +76,7 @@ class Vault::VaultServiceTest < ActiveSupport::TestCase
     value.save!
     assert @subject.update(
       value.id,
-      value: 'another valid value'
+      ActionController::Parameters.new(value: 'another valid value')
     )
   end
 

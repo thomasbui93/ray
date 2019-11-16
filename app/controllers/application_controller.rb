@@ -12,8 +12,7 @@ class ApplicationController < ActionController::Base
   private
 
   def render_standard_error(error)
-    Rails.logger.debug error.message
-    Rails.logger.debug error.backtrace
+    Rails.logger.debug "Message: #{error.message}, backtrace: #{error.backtrace}"
     render json: { error: 'Internal Error.' }, status: :error
   end
 
