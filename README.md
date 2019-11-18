@@ -1,24 +1,14 @@
-# README
+# Ray - Configuration management system.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Ruby on Rails application that provide API system to management configuration value.
 
-Things you may want to cover:
+#### Roadmap
+- [x] Introduce unit tests.
+- [x] Introduce rubucop and reek for coding standard.
+- [x] Add parameters guard.
+- [x] Add audit events.
+- [ ] Add caching system with Redis.
+- [ ] Switch to production mode using PostgreSQL.
+- [ ] Add paging cursor based.
+- [ ] Add authentication system.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
