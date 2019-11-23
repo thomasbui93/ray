@@ -2,7 +2,7 @@
 
 class Vault::Value < ApplicationRecord
   scope :children, lambda { |parent_id|
-    where('parent_id', parent_id) if parent_id.present?
+    where(parent_id: parent_id) if parent_id.present?
   }
 
   validates :value, presence: true

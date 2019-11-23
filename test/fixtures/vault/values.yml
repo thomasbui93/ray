@@ -23,4 +23,4 @@ minimum_vault_child:
   application: minimum_app
   account: minimum_account
   value: minimum_child_value
-  parent: minimum_parent
+  parent: minimum_vault_parent
