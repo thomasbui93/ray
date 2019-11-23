@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2019_11_13_221420) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "parent_id"
-    t.index "\"application\", \"account\"", name: "index_configuration_values_on_application_and_account"
+    t.index ["account_id", "application_id"], name: "index_configuration_values_on_application_and_account"
     t.index ["account_id"], name: "index_configuration_values_on_account_id"
     t.index ["application_id"], name: "index_configuration_values_on_application_id"
   end

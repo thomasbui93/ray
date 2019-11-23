@@ -7,18 +7,42 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres:11
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby 2.5
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.5.x
-    - name: Build and test with Rake
+    - name: Install PostgreSQL 11 client
       run: |
+        sudo apt-get -yqq install libpq-dev
+    - name: Build and test with Rake
+      env:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: test
+        RAILS_ENV: test
+      run: |
+        cp config/database.example.yml config/database.yml
         sudo apt-get install libsqlite3-dev
         gem install bundler
         gem install rubocop
         bundle install --jobs 4 --retry 3
         bundle exec rubocop app lib test -a
+        bundle exec rake db:migrate
         bundle exec rails test
         bundle exec reek app lib test

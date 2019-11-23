@@ -22,6 +22,6 @@ class CreateConfigurationValues < ActiveRecord::Migration[6.0]
 
     add_index :accounts, :universal_key
     add_index :applications, :universal_key
-    add_index :configuration_values, [:application, :account]
+    add_index :configuration_values, [:application_id, :account_id]
   end
 end
