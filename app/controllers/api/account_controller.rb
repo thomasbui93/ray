@@ -5,14 +5,20 @@ class Api::AccountController < ApplicationController
   allow_parameters :*, :anything
   allow_parameters :create, :anything
 
-  def create
-    account = Owner::Account.new do |acc|
-      acc.id = params[:account_id]
-      acc.name = params[:name]
-      acc.universal_key = params[:universal_key]
-    end
-    account.save!
+  def initialize
+    @account_service = Owner::AccountService.new
+  end
 
-    render json: { account: account }, status: :ok
+  def create
+    account_detail = {
+      name: params[:account_name]
+    }
+    user_detail = {
+      first_name: params[:user_first_name],
+      last_name: params[:user_last_name]
+    }
+    account, user = @account_service.register(account_detail: account_detail, primary_user: user_detail)
+
+    render json: { account: account, user: user }, status: :ok
   end
 end
