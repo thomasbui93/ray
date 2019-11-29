@@ -9,4 +9,5 @@ detectors:
     exclude:
       - "ApplicationController#render_error_response"
       - "ApplicationController#render_standard_error"
+      - "Owner::Account::Create#execute"
     

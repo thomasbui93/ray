@@ -5,20 +5,27 @@ class Api::AccountController < ApplicationController
   allow_parameters :*, :anything
   allow_parameters :create, :anything
 
-  def initialize
-    @account_service = Owner::AccountService.new
+  def create
+    account = Owner::Account::Create.call(params)
+
+    render json: { account: account }, status: :ok
   end
 
-  def create
-    account_detail = {
-      name: params[:account_name]
-    }
-    user_detail = {
-      first_name: params[:user_first_name],
-      last_name: params[:user_last_name]
-    }
-    account, user = @account_service.register(account_detail: account_detail, primary_user: user_detail)
+  allow_parameters :show, %i[id]
+  def show
+    account = Owner::Account::Get.call(params[:id])
+    render json: { account: account }, status: :ok
+  end
 
-    render json: { account: account, user: user }, status: :ok
+  allow_parameters :update, :anything
+  def update
+    account = Owner::Account::Update.call(params)
+    render json: { account: account }, status: :ok
+  end
+
+  allow_parameters :destroy, %i[id]
+  def destroy
+    Owner::Account::Remove.call(params[:id])
+    render json: { done: true }, status: :ok
   end
 end
