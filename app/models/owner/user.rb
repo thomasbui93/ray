@@ -5,16 +5,14 @@ require 'universal_key_population'
 class Owner::User < ApplicationRecord
   include UniversalKeyPopulation
 
-  if universal_key == 'internal'
-    validates :email,
-              uniqueness: true,
-              format: { with: URI::MailTo::EMAIL_REGEXP }
-  end
+  validates :email,
+            uniqueness: true,
+            format: { with: URI::MailTo::EMAIL_REGEXP },
+            if: -> { universal_key == 'internal' }
 
-  if universal_key == 'internal'
-    validates :password,
-              length: { minimum: 6 }
-  end
+  validates :password,
+            length: { minimum: 6 },
+            if: -> { universal_key == 'internal' }
 
   validates :universal_key, presence: true
   validates :first_name, presence: true

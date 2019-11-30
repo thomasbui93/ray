@@ -28,4 +28,10 @@ class Api::UserController < ApplicationController
     Owner::User::Remove.call(params[:id])
     render json: { done: true }, status: :ok
   end
+
+  allow_parameters :accounts, %i[id]
+  def accounts
+    accounts = Owner::Membership::GetAccounts.call(params[:id])
+    render json: { accounts: accounts }, status: :ok
+  end
 end

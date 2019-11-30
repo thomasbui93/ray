@@ -9,6 +9,6 @@ class Owner::Account < ApplicationRecord
   validates :name, presence: true
 
   has_many :configuration_values, dependent: :destroy
-  has_many :users, through: :memberships
   has_many :memberships, inverse_of: :account, dependent: :destroy
+  has_many :users, through: :memberships
 end
