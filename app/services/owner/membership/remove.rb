@@ -12,5 +12,11 @@ class Owner::Membership::Remove < BaseService
       user_id: user_id
     )
     membership.destroy!
+  rescue ActiveRecord::RecordNotFound => _e
+    raise RayExceptions::EntityNotFound
+  rescue ActiveRecord::RecordInvalid => error
+    raise RayExceptions::InvalidData, error.message
+  rescue StandardError => _e
+    raise RayExceptions::OperationFailed, 'update'
   end
 end

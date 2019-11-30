@@ -14,5 +14,7 @@ class Owner::Account::Remove < BaseService
       account.destroy!
       users.each { |user| Owner::User::Cleanse.call(user) }
     end
+  rescue StandardError => _e
+    raise RayExceptions::OperationFailed, 'delete'
   end
 end

@@ -17,5 +17,9 @@ class Owner::Account::Create < BaseService
     end
 
     account
+  rescue ActiveRecord::RecordInvalid => error
+    raise RayExceptions::InvalidData, error.message
+  rescue StandardError => _e
+    raise RayExceptions::OperationFailed, 'create'
   end
 end

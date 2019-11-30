@@ -11,5 +11,9 @@ class Owner::User::Create < BaseService
     user = Attributes::Merge.assign_parameter(Owner::User.new, @user_detail)
     user.save!
     user
+  rescue ActiveRecord::RecordInvalid => error
+    raise RayExceptions::InvalidData, error.message
+  rescue StandardError => _e
+    raise RayExceptions::OperationFailed, 'create'
   end
 end

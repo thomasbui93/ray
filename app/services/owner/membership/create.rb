@@ -9,5 +9,9 @@ class Owner::Membership::Create < BaseService
 
   def execute
     Owner::Membership.create!(account_id, user_id, role)
+  rescue ActiveRecord::RecordInvalid => error
+    raise RayExceptions::InvalidData, error.message
+  rescue StandardError => _e
+    raise RayExceptions::OperationFailed, 'create'
   end
 end
