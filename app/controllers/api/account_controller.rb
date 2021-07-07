@@ -3,16 +3,34 @@
 # api/account controller
 class Api::AccountController < ApplicationController
   allow_parameters :*, :anything
+
   allow_parameters :create, :anything
-
   def create
-    account = Owner::Account.new do |acc|
-      acc.id = params[:account_id]
-      acc.name = params[:name]
-      acc.universal_key = params[:universal_key]
-    end
-    account.save!
-
+    account = Owner::Account::Create.call(params)
     render json: { account: account }, status: :ok
+  end
+
+  allow_parameters :show, %i[id]
+  def show
+    account = Owner::Account::Get.call(params[:id])
+    render json: { account: account }, status: :ok
+  end
+
+  allow_parameters :update, :anything
+  def update
+    account = Owner::Account::Update.call(params)
+    render json: { account: account }, status: :ok
+  end
+
+  allow_parameters :destroy, %i[id]
+  def destroy
+    Owner::Account::Remove.call(params[:id])
+    render json: { done: true }, status: :ok
+  end
+
+  allow_parameters :users, %i[id]
+  def users
+    users = Owner::Membership::GetUsers.call(params[:id])
+    render json: { users: users }, status: :ok
   end
 end

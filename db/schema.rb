@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_13_221420) do
+ActiveRecord::Schema.define(version: 2019_11_23_215212) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name", null: false
@@ -18,6 +18,14 @@ ActiveRecord::Schema.define(version: 2019_11_13_221420) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["universal_key"], name: "index_accounts_on_universal_key"
+  end
+
+  create_table "accounts_users", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "account_id", null: false
+    t.integer "role", default: 0
+    t.index ["account_id"], name: "index_accounts_users_on_account_id"
+    t.index ["user_id"], name: "index_accounts_users_on_user_id"
   end
 
   create_table "applications", force: :cascade do |t|
@@ -36,8 +44,8 @@ ActiveRecord::Schema.define(version: 2019_11_13_221420) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "parent_id"
-    t.index ["account_id", "application_id"], name: "index_configuration_values_on_application_and_account"
     t.index ["account_id"], name: "index_configuration_values_on_account_id"
+    t.index ["application_id", "account_id"], name: "index_configuration_values_on_application_id_and_account_id"
     t.index ["application_id"], name: "index_configuration_values_on_application_id"
   end
 
@@ -48,6 +56,17 @@ ActiveRecord::Schema.define(version: 2019_11_13_221420) do
     t.datetime "created_at", null: false
     t.integer "entity_id", null: false
     t.index ["entity_type", "entity_id"], name: "index_events_audits_on_entity_type_and_entity_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "email"
+    t.string "password"
+    t.string "universal_key"
+    t.boolean "is_external"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "configuration_values", "accounts"
